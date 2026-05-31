@@ -2,6 +2,7 @@ import 'package:flutter_challenge/model/offer_model.dart';
 import 'package:flutter_challenge/repository/offer_repo.dart';
 import 'package:flutter_challenge/service/the_exceptions.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 enum OfferFilter { all, bakery, cafe, market }
 
@@ -13,6 +14,9 @@ class HomeScreenController extends GetxController {
   final RxList<OfferModel> _offers = <OfferModel>[].obs;
   final Rx<OfferFilter> _activeFilter = OfferFilter.all.obs;
   final RxString _searchQuery = ''.obs;
+
+  final RefreshController refreshController =
+      RefreshController(initialRefresh: false);
 
   bool get isLoading => _isLoading.value;
   bool get hasError => _hasError.value;
@@ -37,6 +41,12 @@ class HomeScreenController extends GetxController {
   void onInit() {
     super.onInit();
     fetchOffers();
+  }
+
+  @override
+  void onClose() {
+    refreshController.dispose();
+    super.onClose();
   }
 
   Future<void> fetchOffers() async {
@@ -71,5 +81,8 @@ class HomeScreenController extends GetxController {
   }
 
   /// INTENTIONAL GAP (Task A3): pull-to-refresh not wired in UI — candidate connects this.
-  Future<void> onRefresh() => fetchOffers();
+  Future<void> onRefresh() async {
+    await fetchOffers();
+    refreshController.refreshCompleted();
+  }
 }

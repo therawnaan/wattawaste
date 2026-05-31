@@ -5,6 +5,7 @@ import 'package:flutter_challenge/feature/shared_widget/offer_card.dart';
 import 'package:flutter_challenge/util/constants/app_colors.dart';
 import 'package:flutter_challenge/util/styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:get/get.dart';
 
 class HomeScreen extends GetView<HomeScreenController> {
@@ -95,15 +96,19 @@ class HomeScreen extends GetView<HomeScreenController> {
         return const SizedBox.shrink();
       }
 
-      return ListView.builder(
-        itemCount: offers.length,
-        itemBuilder: (context, index) {
-          final offer = offers[index];
-          return OfferCard(
-            offer: offer,
-            onFavoriteTap: () => controller.toggleFavorite(offer.id),
-          );
-        },
+      return SmartRefresher(
+        controller: controller.refreshController,
+        onRefresh: controller.onRefresh,
+        child: ListView.builder(
+          itemCount: offers.length,
+          itemBuilder: (context, index) {
+            final offer = offers[index];
+            return OfferCard(
+              offer: offer,
+              onFavoriteTap: () => controller.toggleFavorite(offer.id),
+            );
+          },
+        ),
       );
     });
   }
