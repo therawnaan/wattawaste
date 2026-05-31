@@ -93,7 +93,28 @@ class HomeScreen extends GetView<HomeScreenController> {
       final offers = controller.visibleOffers;
       // INTENTIONAL GAP (Task A4): no empty state widget when offers.isEmpty.
       if (offers.isEmpty) {
-        return const SizedBox.shrink();
+        return SmartRefresher(
+          controller: controller.refreshController,
+          onRefresh: controller.onRefresh,
+          child: ListView(
+            children: [
+              SizedBox(height: 80.h),
+              Center(
+                child: Column(
+                  children: [
+                    Icon(Icons.search_off, size: 48.r, color: Colors.grey),
+                    SizedBox(height: 12.h),
+                    Text(
+                      'empty_offers'.tr,
+                      style: Styles.regularText14(),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
       }
 
       return SmartRefresher(
