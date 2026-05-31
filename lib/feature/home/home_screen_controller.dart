@@ -2,7 +2,8 @@ import 'package:flutter_challenge/model/offer_model.dart';
 import 'package:flutter_challenge/repository/offer_repo.dart';
 import 'package:flutter_challenge/service/the_exceptions.dart';
 import 'package:get/get.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:flutter_challenge/util/constants/app_constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum OfferFilter { all, bakery, cafe, market }
 
@@ -14,8 +15,9 @@ class HomeScreenController extends GetxController {
   final RxList<OfferModel> _offers = <OfferModel>[].obs;
   final Rx<OfferFilter> _activeFilter = OfferFilter.all.obs;
   final RxString _searchQuery = ''.obs;
+  final RxBool _favoritesOnly = false.obs;
 
-
+  bool get favoritesOnly => _favoritesOnly.value;
   bool get isLoading => _isLoading.value;
   bool get hasError => _hasError.value;
   List<OfferModel> get offers => _offers;
@@ -31,16 +33,17 @@ class HomeScreenController extends GetxController {
       final matchesSearch = q.isEmpty ||
           o.title.toLowerCase().contains(q) ||
           o.storeName.toLowerCase().contains(q);
-      return matchesFilter && matchesSearch;
+      final matchesFavorites = !_favoritesOnly.value || o.isFavorite;
+      return matchesFilter && matchesSearch && matchesFavorites;
     }).toList();
   }
 
   @override
   void onInit() {
     super.onInit();
+    _loadFavoritesFilter();
     fetchOffers();
   }
-
 
   Future<void> fetchOffers() async {
     _isLoading.value = true;
@@ -54,6 +57,19 @@ class HomeScreenController extends GetxController {
     } finally {
       _isLoading.value = false;
     }
+  }
+
+  Future<void> _loadFavoritesFilter() async {
+    final prefs = Get.find<SharedPreferences>();
+    _favoritesOnly.value =
+        prefs.getBool(AppConstants.FAVORITES_FILTER_PREF_KEY) ?? false;
+  }
+
+  Future<void> toggleFavoritesFilter() async {
+    _favoritesOnly.value = !_favoritesOnly.value;
+    final prefs = Get.find<SharedPreferences>();
+    await prefs.setBool(
+        AppConstants.FAVORITES_FILTER_PREF_KEY, _favoritesOnly.value);
   }
 
   void setFilter(OfferFilter filter) {

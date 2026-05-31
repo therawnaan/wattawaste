@@ -58,6 +58,7 @@ class HomeScreen extends GetView<HomeScreenController> {
             _filterChip('filter_bakery'.tr, OfferFilter.bakery),
             _filterChip('filter_cafe'.tr, OfferFilter.cafe),
             _filterChip('filter_market'.tr, OfferFilter.market),
+            _favoritesChip(),
           ],
         ),
       );
@@ -74,6 +75,27 @@ class HomeScreen extends GetView<HomeScreenController> {
         onSelected: (_) => controller.setFilter(filter),
         selectedColor: AppColors.primary.withValues(alpha: 0.2),
         checkmarkColor: AppColors.primary,
+      ),
+    );
+  }
+
+  Widget _favoritesChip() {
+    return Padding(
+      padding: EdgeInsets.only(right: 8.w),
+      child: FilterChip(
+        label: Text('filter_favorites'.tr),
+        selected: controller.favoritesOnly,
+        onSelected: (_) => controller.toggleFavoritesFilter(),
+        selectedColor: Colors.red.withValues(alpha: 0.2),
+        checkmarkColor: Colors.red,
+        showCheckmark: false,
+        elevation: 0,
+        pressElevation: 0,
+        avatar: Icon(
+          controller.favoritesOnly ? Icons.favorite : Icons.favorite_border,
+          color: controller.favoritesOnly ? Colors.red : null,
+          size: 16,
+        ),
       ),
     );
   }
