@@ -5,7 +5,6 @@ import 'package:flutter_challenge/feature/shared_widget/offer_card.dart';
 import 'package:flutter_challenge/util/constants/app_colors.dart';
 import 'package:flutter_challenge/util/styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:get/get.dart';
 
 class HomeScreen extends GetView<HomeScreenController> {
@@ -93,8 +92,7 @@ class HomeScreen extends GetView<HomeScreenController> {
       final offers = controller.visibleOffers;
       // INTENTIONAL GAP (Task A4): no empty state widget when offers.isEmpty.
       if (offers.isEmpty) {
-        return SmartRefresher(
-          controller: controller.refreshController,
+        return RefreshIndicator(
           onRefresh: controller.onRefresh,
           child: ListView(
             children: [
@@ -117,8 +115,7 @@ class HomeScreen extends GetView<HomeScreenController> {
         );
       }
 
-      return SmartRefresher(
-        controller: controller.refreshController,
+      return RefreshIndicator(
         onRefresh: controller.onRefresh,
         child: ListView.builder(
           itemCount: offers.length,

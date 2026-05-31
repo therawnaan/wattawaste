@@ -15,8 +15,6 @@ class HomeScreenController extends GetxController {
   final Rx<OfferFilter> _activeFilter = OfferFilter.all.obs;
   final RxString _searchQuery = ''.obs;
 
-  final RefreshController refreshController =
-      RefreshController(initialRefresh: false);
 
   bool get isLoading => _isLoading.value;
   bool get hasError => _hasError.value;
@@ -43,11 +41,6 @@ class HomeScreenController extends GetxController {
     fetchOffers();
   }
 
-  @override
-  void onClose() {
-    refreshController.dispose();
-    super.onClose();
-  }
 
   Future<void> fetchOffers() async {
     _isLoading.value = true;
@@ -89,6 +82,5 @@ class HomeScreenController extends GetxController {
   /// INTENTIONAL GAP (Task A3): pull-to-refresh not wired in UI — candidate connects this.
   Future<void> onRefresh() async {
     await fetchOffers();
-    refreshController.refreshCompleted();
   }
 }
