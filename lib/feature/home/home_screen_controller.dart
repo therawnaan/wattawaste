@@ -21,7 +21,17 @@ class HomeScreenController extends GetxController {
   String get searchQuery => _searchQuery.value;
 
   /// INTENTIONAL GAP (Task A1): filter + search not applied — returns all offers.
-  List<OfferModel> get visibleOffers => _offers;
+  List<OfferModel> get visibleOffers {
+    return _offers.where((o) {
+      final matchesFilter = _activeFilter.value == OfferFilter.all ||
+          o.category == _activeFilter.value.name;
+      final q = _searchQuery.value.toLowerCase();
+      final matchesSearch = q.isEmpty ||
+          o.title.toLowerCase().contains(q) ||
+          o.storeName.toLowerCase().contains(q);
+      return matchesFilter && matchesSearch;
+    }).toList();
+  }
 
   @override
   void onInit() {
@@ -46,11 +56,13 @@ class HomeScreenController extends GetxController {
   void setFilter(OfferFilter filter) {
     _activeFilter.value = filter;
     // INTENTIONAL GAP (Task A1): candidate should refresh visibleOffers.
+    // Changes not necessary here
   }
 
   void setSearchQuery(String value) {
     _searchQuery.value = value;
     // INTENTIONAL GAP (Task A1): candidate should refresh visibleOffers.
+    // Changes not necessary here.
   }
 
   Future<void> toggleFavorite(String offerId) async {

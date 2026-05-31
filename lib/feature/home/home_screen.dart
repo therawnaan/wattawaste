@@ -44,6 +44,7 @@ class HomeScreen extends GetView<HomeScreenController> {
         fillColor: Colors.white,
       ),
       // INTENTIONAL GAP (Task A1): onChanged not connected to controller.setSearchQuery.
+      onChanged: controller.setSearchQuery,
     );
   }
 
