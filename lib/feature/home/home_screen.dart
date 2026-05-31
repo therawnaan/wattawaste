@@ -6,6 +6,7 @@ import 'package:flutter_challenge/util/constants/app_colors.dart';
 import 'package:flutter_challenge/util/styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomeScreen extends GetView<HomeScreenController> {
   const HomeScreen({super.key});
@@ -103,7 +104,7 @@ class HomeScreen extends GetView<HomeScreenController> {
   Widget _buildOfferList() {
     return Obx(() {
       if (controller.isLoading) {
-        return const Center(child: CircularProgressIndicator());
+        return _buildShimmer();
       }
       if (controller.hasError) {
         return Center(
@@ -151,5 +152,53 @@ class HomeScreen extends GetView<HomeScreenController> {
         ),
       );
     });
+  }
+
+  Widget _buildShimmer() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
+      child: ListView.builder(
+        itemCount: 5,
+        itemBuilder: (context, index) {
+          return Card(
+            margin: EdgeInsets.only(bottom: 12.h),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.r)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 140.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(16.r),
+                      topRight: Radius.circular(16.r),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(12.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                          height: 16.h, width: 160.w, color: Colors.white),
+                      SizedBox(height: 8.h),
+                      Container(
+                          height: 12.h, width: 100.w, color: Colors.white),
+                      SizedBox(height: 8.h),
+                      Container(height: 12.h, width: 80.w, color: Colors.white),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 }
